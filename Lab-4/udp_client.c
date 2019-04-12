@@ -20,44 +20,32 @@ void die(char *s)
  
 int main(void)
 {
-    struct sockaddr_in si_other;
-    int s, i, slen=sizeof(si_other);
-    char buf[BUFLEN];
-    char message[BUFLEN];
- 
-    if ( (s=socket(AF_INET, SOCK_DGRAM, IPPROTO_UDP)) == -1)
-    {
-        die("socket");
+    struct sockaddr_in temp;
+    int s=socket(PF_INET,SOCK_DGRAM,IPPROTO_UDP);
+    if(s<0){
+        die("Socket");
+        exit(0);
     }
- 
-    memset((char *) &si_other, 0, sizeof(si_other));
-    si_other.sin_family = AF_INET;
-    si_other.sin_port = htons(PORT);
-	si_other.sin_addr.s_addr = inet_addr("127.0.0.1");
-     
-    while(1)
+    temp.sin_family=AF_INET;
+    temp.sin_port=htons(12345);
+    temp.sin_addr.s_addr=inet_addr("127.0.0.1");
+    char msg[100];
+    printf("Enter a message for client\n");
+    fgets(msg,100,stdin);
+    int l=sendto(s,msg,strlen(msg),0,(struct sockadddr*)&temp,sizeof(temp));
+    if(l!=strlen(msg))
     {
-        printf("Enter your guess between 1 to 6: ");
-        fgets(message,BUFLEN,stdin);
-         
-        //send the message
-        if (sendto(s, message, strlen(message) , 0 , (struct sockaddr *) &si_other, slen)==-1)
-        {
-            die("sendto()");
-        }
-         
-        //receive a reply and print it
-        //clear the buffer by filling null, it might have previously received data
-        memset(buf,'\0', BUFLEN);
-        //try to receive some data, this is a blocking call
-        if (recvfrom(s, buf, BUFLEN, 0, (struct sockaddr *) &si_other, &slen) == -1)
-        {
-            die("recvfrom()");
-        }
-         
-        puts(buf);
+        die("Send Error");
+        exit(0);
     }
- 
+    l=recvfrom(s,msg,99,0,(struct sockaddr*)&temp,sizeof(temp));
+    if(l<0)
+    {
+        die("Recv error");
+        exit(0);
+    }
+    msg[l]='\0';
+    printf("%s\n",msg);
     close(s);
     return 0;
 }

@@ -12,7 +12,7 @@ int main(void)
 {
     int listenfd = 0;
     int connfd = 0;
-    struct sockaddr_in serv_addr;
+    struct sockaddr_in serv_addr,si_other;
     char sendBuff[1025];
     int numrv;
 
@@ -42,19 +42,19 @@ int main(void)
         unsigned char command_buffer[2] = {'\0'}; 
         int offset;
         int command;
-        
+        int slen=sizeof(si_other);
         
         printf("Waiting for client to send the command (Full File (0) Partial File (1)\n"); 
         
-        while(recvfrom(listenfd, command_buffer, 2,0,(struct sockaddr*)&si_other,sizeof(si_other)) == 0);
-                sscanf(command_buffer, "%d", &command); 
+        while(recvfrom(listenfd, command_buffer, 2,0,(struct sockaddr*)&si_other,&slen) == 0);
+            sscanf(command_buffer, "%d", &command); 
                 
         if(command == 0)
                 offset = 0;        
         else
         {
                 printf("Waiting for client to send the offset\n");  
-                while(recvfrom(listenfd, command_buffer, 10,0,(struct sockaddr*)&si_other,sizeof(si_other))==0);
+                while(recvfrom(listenfd, command_buffer, 10,0,(struct sockaddr*)&si_other,&slen)==0);
                 sscanf(offset_buffer, "%d", &offset); 
         
         }
@@ -69,19 +69,19 @@ int main(void)
         }   
 
         /* Read data from file and send it */
-                 fseek(fp, offset, SEEK_SET);
+        fseek(fp, offset, SEEK_SET);
         while(1)
         {
             /* First read file in chunks of 256 bytes */
             unsigned char buff[256]={0};
+            int slen=0;
             int nread = fread(buff,1,256,fp);
-            printf("Bytes read %d \n", nread);        
-
+            printf("Bytes read %d \n", nread);
             /* If read was success, send data. */
             if(nread > 0)
             {
                 printf("Sending \n");
-               	sendto(listenfd, buff, nread,0,(struct sockaddr*)&si_other,sizeof(si_other))
+               	sendto(listenfd, buff, nread,0,(struct sockaddr*)&si_other,sizeof(si_other));
             }
 
             /*

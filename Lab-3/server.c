@@ -68,11 +68,14 @@ int main ()
   msg[temp2] = '\0';
   int ans=stringToInt(msg);
   //printf ("ENTER MESSAGE FOR CLIENT\n");
+  printf("%s\n",msg);
   sprintf(msg,"%d",ans);
+
   int bytesSent = send (clientSocket,msg,strlen(msg),0);
   if (bytesSent != strlen(msg)) 
-    { printf ("Error while sending message to client");   
-      exit(0);
-    }
+  {
+	printf ("Error while sending message to client");   
+	exit(0);
+  }
  close (serverSocket);
 }

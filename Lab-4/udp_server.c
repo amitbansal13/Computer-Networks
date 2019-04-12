@@ -65,7 +65,7 @@ int main(void)
         {
             die("sendto()");
         }
-	if (guess!=atoi(buf) && sendto(s, "You lost", 9, 0, (struct sockaddr*) &si_other, slen) == -1)
+	    if (guess!=atoi(buf) && sendto(s, "You lost", 9, 0, (struct sockaddr*) &si_other, slen) == -1)
         {
             die("sendto()");
         }

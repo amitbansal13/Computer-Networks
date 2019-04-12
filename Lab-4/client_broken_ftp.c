@@ -45,7 +45,9 @@ int main(void)
             return 1;
         }
         fseek(fp, 0, SEEK_END);
-        offset = ftell(fp);//to get the size of file we move the file pointer to end and then use ftell which returns the difference between the starting of file and current fp
+        offset = ftell(fp);
+        //to get the size of file we move the file pointer to end and 
+        //then use ftell which returns the difference between the starting of file and current fp
         fclose(fp);
         fp = fopen("destination_file.txt", "ab"); 
         if(NULL == fp)
@@ -79,7 +81,8 @@ int main(void)
     
     
     /* Receive data in chunks of 256 bytes */
-    while((bytesReceived = recvfrom(sockfd, recvBuff, 256,0,(struct sockaddr *)&serv_addr, sizeof(serv_addr))) > 0)
+    int slen=sizeof(serv_addr);
+    while((bytesReceived = recvfrom(sockfd, recvBuff, 256,0,(struct sockaddr *)&serv_addr, &slen)) > 0)
     {
         printf("Bytes received %d\n",bytesReceived);    
          recvBuff[bytesReceived] = 0;
