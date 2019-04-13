@@ -12,6 +12,9 @@ set nf [open out.nam w]
 
 $ns namtrace-all $nf
 
+set tf [open outall.tr w]
+$ns trace-all $tf
+
 set n0 [$ns node]
 set n1 [$ns node]
 set n2 [$ns node]
@@ -19,13 +22,14 @@ set n3 [$ns node]
 set n4 [$ns node]
 
 proc finish {} {
-    global ns nf f0 f1 f2 f3
+    global ns nf f0 f1 f2 f3 tf
     $ns flush-trace
     close $nf
     close $f0
     close $f1
     close $f2
     close $f3
+    close $tf
     exec nam out.nam &
     exec xgraph tcp10.tr tcp20.tr -geometry 800x400 &
     exec xgraph tcp11.tr -geometry 800x400 &
@@ -52,8 +56,10 @@ proc record {} {
 }
 $ns duplex-link $n4 $n0 2Mb 100ms DropTail
 $ns duplex-link $n0 $n1 2Mb 100ms DropTail
-$ns duplex-link $n1 $n2 2Mb 100ms DropTail
+$ns duplex-link $n1 $n2 1Mb 100ms DropTail
 $ns duplex-link $n3 $n1 2Mb 100ms DropTail
+
+$ns queue-limit $n1 $n2 2
 
 set tcp [new Agent/TCP]
 $ns attach-agent $n4 $tcp

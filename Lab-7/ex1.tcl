@@ -10,6 +10,9 @@ set n0 [$ns node]
 set n1 [$ns node]
 set n2 [$ns node]
 
+set tf [open outall.tr w]
+$ns trace-all $tf
+
 proc finish {} {
     global ns nf f0 f1
     $ns flush-trace
