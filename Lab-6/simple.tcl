@@ -7,13 +7,13 @@ $ns namtrace-all $nf
 
 #Define a 'finish' procedure
 proc finish {} {
-        global ns nf
-        $ns flush-trace
+    global ns nf
+    $ns flush-trace
 	#Close the trace file
-        close $nf
+    close $nf
 	#Execute nam on the trace file
-        exec nam out.nam &
-        exit 0
+    exec nam out.nam &
+    exit 0
 }
 
 #Create two nodes

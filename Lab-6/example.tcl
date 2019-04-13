@@ -61,8 +61,8 @@ proc attach-expoo-traffic { node sink size burst idle rate } {
 	$traffic set idle_time_ $idle
 	$traffic set rate_ $rate
         
-        # Attach traffic source to the traffic generator
-        $traffic attach-agent $source
+    # Attach traffic source to the traffic generator
+    $traffic attach-agent $source
 	#Connect the source and the sink
 	$ns connect $source $sink
 	return $traffic
@@ -107,7 +107,7 @@ $ns attach-agent $n4 $sink2
 #Create three traffic sources
 set source0 [attach-expoo-traffic $n0 $sink0 200 2s 1s 100k]
 set source1 [attach-expoo-traffic $n1 $sink1 200 2s 1s 200k]
-set source2 [attach-expoo-traffic $n2 $sink2 200 2s 1s 300k]
+set source2 [attach-expoo-traffic $n2 $sink2 100 2s 1s 300k]
 
 #Start logging the received bandwidth
 $ns at 0.0 "record"
