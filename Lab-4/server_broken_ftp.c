@@ -16,8 +16,12 @@ int main(void)
     char sendBuff[1025];
     int numrv;
 
-    listenfd = socket(AF_INET, SOCK_STREAM, 0);
-
+    listenfd = socket(AF_INET, SOCK_DGRAM, IPPROTO_UDP);
+    if(listenfd<0)
+    {
+        printf("Error listenfd");
+        return -1;
+    }
     printf("Socket retrieve success\n");
 
     memset(&serv_addr, '0', sizeof(serv_addr));
@@ -27,13 +31,17 @@ int main(void)
     serv_addr.sin_addr.s_addr = htonl(INADDR_ANY);
     serv_addr.sin_port = htons(5001);
 
-    bind(listenfd, (struct sockaddr*)&serv_addr,sizeof(serv_addr));
-
-    if(listen(listenfd, 10) == -1)
+    int b=bind(listenfd, (struct sockaddr*)&serv_addr,sizeof(serv_addr));
+    if(b<0)
     {
-        printf("Failed to listen\n");
-        return -1;
+        printf("Error Bind\n");
+        return -1;   
     }
+    // if(listen(listenfd, 5) == -1)
+    // {
+    //     printf("Failed to listen\n");
+    //     return -1;
+    // }
 
 
     while(1)
